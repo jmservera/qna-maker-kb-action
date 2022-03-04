@@ -32,11 +32,6 @@ function knowledgebaseUpdate(subscription_key, endpoint) {
             resolve(response);
         });
     });
-    //client.knowledgebase.update()
-    // if (typeof milliseconds !== 'number') {
-    //   throw new Error('milliseconds not a number');
-    // }
-    // setTimeout(() => resolve("done!"), milliseconds)
 }
 exports.update = knowledgebaseUpdate;
 

@@ -6,8 +6,8 @@ const qnamaker = require("@azure/cognitiveservices-qnamaker")
 const msRest = require("@azure/ms-rest-js")
 
 function knowledgebaseUpdate(subscription_key: string, endpoint: string) {
-  return new Promise((resolve) => {
 
+  return new Promise((resolve) => {
     if (subscription_key == null)
       throw new Error('Please set your environment variables: AZURE_COGNITIVE_SERVICES_SUBSCRIPTION_KEY');
     if (endpoint == null)
@@ -30,12 +30,6 @@ function knowledgebaseUpdate(subscription_key: string, endpoint: string) {
       resolve(response);
     });
   });
-
-    //client.knowledgebase.update()
-    // if (typeof milliseconds !== 'number') {
-    //   throw new Error('milliseconds not a number');
-    // }
-    // setTimeout(() => resolve("done!"), milliseconds)
 }
 
 export { knowledgebaseUpdate as update }
