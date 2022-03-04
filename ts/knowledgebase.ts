@@ -19,11 +19,9 @@ function knowledgebaseUpdate(api_key: string, endpoint: string, id: string) {
     const qnaMakerClient = new qnamaker.QnAMakerClient(creds, endpoint);
     const knowledgeBaseClient = new qnamaker.Knowledgebase(qnaMakerClient);
     
-    const update_kb_payload = {
-      add: {},
-      update: null,
-      delete: null,
-      defaultAnswerUsedForExtraction: "No answer found. Please rephrase your question."
+    
+    var update_kb_payload = {
+      update: {}
     };
 
     knowledgeBaseClient.update(id, update_kb_payload).then(function (response) {
@@ -32,4 +30,4 @@ function knowledgebaseUpdate(api_key: string, endpoint: string, id: string) {
   });
 }
 
-export { knowledgebaseUpdate as update }
+export {knowledgebaseUpdate as update}
