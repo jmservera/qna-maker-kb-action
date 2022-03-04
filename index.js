@@ -9,7 +9,7 @@ async function run() {
 
     switch(operation){
       case 'update':
-        kb.kbUpdate(core.getInput('endpoint'), core.getInput('credentials'));
+        kb.update(core.getInput('kbId'), core.getInput('endpoint'), core.getInput('credentials'));
     }
 
     // core.info(`Waiting ${ms} milliseconds ...`);

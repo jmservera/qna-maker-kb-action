@@ -4,7 +4,7 @@ const kb = require('./knowledgebase');
 // const path = require('path');
 
 test('throws invalid number', async () => {
-  await expect(kb.update(null,null)).rejects.toThrow('Please set your environment variables: AZURE_COGNITIVE_SERVICES_SUBSCRIPTION_KEY');
+  await expect(kb.update(null,null)).rejects.toThrow('Please set api_key');
 });
 
 // test('wait 500 ms', async () => {

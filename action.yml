@@ -5,13 +5,16 @@ inputs:
     description: 'Type of operation to run: update, train, publish'
     required: true
     default: 'update'
-  credentials:
+  api-key:
     description: 'QnA API Key'
     required: true
   endpoint:
     description: 'QnA Maker endpoint'
     required: true
     default: 'https://westus.api.cognitive.microsoft.com/qnamaker/v2.0'
+  kbId:
+    description: 'Knowledge base id'
+    required: true
 outputs:
   time: # output will be available to future steps
     description: 'The current time after waiting'
