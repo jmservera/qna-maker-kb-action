@@ -1,0 +1,8 @@
+{
+    "compilerOptions": {
+      "outDir": "./"
+    },
+    "files": [
+      "./ts/knowledgebase.ts"
+    ]
+  }

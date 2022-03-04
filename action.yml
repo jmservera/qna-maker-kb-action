@@ -1,10 +1,17 @@
-name: 'Wait'
-description: 'Wait a designated number of milliseconds'
+name: 'QnA Maker Knowledgebase Operations'
+description: 'Update, train or publish QnA Maker Knowledgebases'
 inputs:
-  milliseconds:  # id of input
-    description: 'number of milliseconds to wait'
+  operation:  
+    description: 'Type of operation to run: update, train, publish'
     required: true
-    default: '1000'
+    default: 'update'
+  credentials:
+    description: 'QnA API Key'
+    required: true
+  endpoint:
+    description: 'QnA Maker endpoint'
+    required: true
+    default: 'https://westus.api.cognitive.microsoft.com/qnamaker/v2.0'
 outputs:
   time: # output will be available to future steps
     description: 'The current time after waiting'
