@@ -5,8 +5,7 @@
 import qnamaker = require("@azure/cognitiveservices-qnamaker");
 import msRest = require("@azure/ms-rest-js");
 
-function knowledgebaseUpdate(api_key: string, endpoint: string, id: string) {
-  
+function update(api_key: string, endpoint: string, id: string) {
   return new Promise((resolve) => {
     if (api_key == null || api_key=="")
       throw new Error('Please set api_key');
@@ -30,4 +29,4 @@ function knowledgebaseUpdate(api_key: string, endpoint: string, id: string) {
   });
 }
 
-export {knowledgebaseUpdate as update}
+export {update};

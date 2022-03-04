@@ -1,44 +1,6 @@
 require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ 3370:
-/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
-
-"use strict";
-
-// code example from 
-// https://docs.microsoft.com/en-us/azure/cognitive-services/qnamaker/quickstarts/quickstart-sdk?pivots=programming-language-javascript
-exports.__esModule = true;
-exports.update = void 0;
-var qnamaker = __nccwpck_require__(7782);
-var msRest = __nccwpck_require__(812);
-function knowledgebaseUpdate(api_key, endpoint, id) {
-    return new Promise(function (resolve) {
-        if (api_key == null || api_key == "")
-            throw new Error('Please set api_key');
-        if (endpoint == null || endpoint == "")
-            throw new Error('Please set endpoint');
-        if (id == null || id == "")
-            throw new Error('Please set id');
-        var creds = new msRest.ApiKeyCredentials({ inHeader: { 'Ocp-Apim-Subscription-Key': api_key } });
-        var qnaMakerClient = new qnamaker.QnAMakerClient(creds, endpoint);
-        var knowledgeBaseClient = new qnamaker.Knowledgebase(qnaMakerClient);
-        var update_kb_payload = {
-            add: {},
-            update: null,
-            "delete": null,
-            defaultAnswerUsedForExtraction: "No answer found. Please rephrase your question."
-        };
-        knowledgeBaseClient.update(id, update_kb_payload).then(function (response) {
-            resolve(response);
-        });
-    });
-}
-exports.update = knowledgebaseUpdate;
-
-
-/***/ }),
-
 /***/ 7351:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
@@ -24631,6 +24593,41 @@ exports["default"] = _default;
 
 /***/ }),
 
+/***/ 6723:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+// code example from 
+// https://docs.microsoft.com/en-us/azure/cognitive-services/qnamaker/quickstarts/quickstart-sdk?pivots=programming-language-javascript
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.update = void 0;
+const qnamaker = __nccwpck_require__(7782);
+const msRest = __nccwpck_require__(812);
+function update(api_key, endpoint, id) {
+    return new Promise((resolve) => {
+        if (api_key == null || api_key == "")
+            throw new Error('Please set api_key');
+        if (endpoint == null || endpoint == "")
+            throw new Error('Please set endpoint');
+        if (id == null || id == "")
+            throw new Error('Please set id');
+        const creds = new msRest.ApiKeyCredentials({ inHeader: { 'Ocp-Apim-Subscription-Key': api_key } });
+        const qnaMakerClient = new qnamaker.QnAMakerClient(creds, endpoint);
+        const knowledgeBaseClient = new qnamaker.Knowledgebase(qnaMakerClient);
+        var update_kb_payload = {
+            update: {}
+        };
+        knowledgeBaseClient.update(id, update_kb_payload).then(function (response) {
+            resolve(response);
+        });
+    });
+}
+exports.update = update;
+
+
+/***/ }),
+
 /***/ 2877:
 /***/ ((module) => {
 
@@ -24841,7 +24838,7 @@ var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
 (() => {
 const core = __nccwpck_require__(2186);
-const kb = __nccwpck_require__(3370);
+const kb = __nccwpck_require__(6723);
 
 
 // most @actions toolkit packages have async methods

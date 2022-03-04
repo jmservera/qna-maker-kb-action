@@ -1,5 +1,5 @@
 const core = require('@actions/core');
-const kb = require('./knowledgebase');
+const kb = require('./ts/knowledgebase');
 
 
 // most @actions toolkit packages have async methods
