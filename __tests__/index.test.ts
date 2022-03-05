@@ -1,13 +1,12 @@
-
-import * as kb from './knowledgebase';
+import * as kb from '../ts/knowledgebase'
 
 // const process = require('process');
 // const cp = require('child_process');
 // const path = require('path');
 
 test('Throws set api_key', async () => {
-  await expect(kb.update('','','')).rejects.toThrow('Please set api_key');
-});
+  await expect(kb.update('', '', '')).rejects.toThrow('Please set api_key')
+})
 
 // test('wait 500 ms', async () => {
 //   const start = new Date();
