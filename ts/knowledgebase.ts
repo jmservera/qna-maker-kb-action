@@ -2,11 +2,10 @@
 // code example from 
 // https://docs.microsoft.com/en-us/azure/cognitive-services/qnamaker/quickstarts/quickstart-sdk?pivots=programming-language-javascript
 
-import qnamaker = require("@azure/cognitiveservices-qnamaker");
-import msRest = require("@azure/ms-rest-js");
+import * as qnamaker from '@azure/cognitiveservices-qnamaker';
+import * as msRest from '@azure/ms-rest-js';
 
-function update(api_key: string, endpoint: string, id: string) {
-  return new Promise((resolve) => {
+async function update(api_key: string, endpoint: string, id: string) {
     if (api_key == null || api_key=="")
       throw new Error('Please set api_key');
     if (endpoint == null || endpoint=="")
@@ -23,10 +22,8 @@ function update(api_key: string, endpoint: string, id: string) {
       update: {}
     };
 
-    knowledgeBaseClient.update(id, update_kb_payload).then(function (response) {
-      resolve(response);
-    });
-  });
+    var response=await knowledgeBaseClient.update(id, update_kb_payload);
+    return response;
 }
 
 export {update};

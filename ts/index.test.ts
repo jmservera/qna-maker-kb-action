@@ -1,10 +1,12 @@
-const kb = require('./lib/knowledgebase');
+import { json } from 'stream/consumers';
+import * as kb from './knowledgebase';
+
 // const process = require('process');
 // const cp = require('child_process');
 // const path = require('path');
 
-test('throws invalid number', async () => {
-  await expect(kb.update(null,null)).rejects.toThrow('Please set api_key');
+test('Throws set api_key', async () => {
+  await expect(kb.update('','','')).rejects.toThrow('Please set api_key');
 });
 
 // test('wait 500 ms', async () => {

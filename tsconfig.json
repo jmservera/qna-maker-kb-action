@@ -1,12 +1,12 @@
 {
-    "compilerOptions": {
-      "esModuleInterop": true,
-      "module": "commonjs",
-      "strict": true,
-      "declaration": true,
-      "target": "es6",
-      "sourceMap": true,
-      "outDir": "./lib",
+  "extends": "@tsconfig/node16/tsconfig.json",
+  "compilerOptions": {
+      "outDir": "./build",
       "rootDir": "./ts"
-    }
+    },
+    "exclude": [
+      "node_modules",
+      "dist",
+      "build"
+    ]
   }
