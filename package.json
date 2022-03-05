@@ -10,6 +10,11 @@
     "test": "jest",
     "all": "tsc && npm run lint && npm run prepare && npm run test"
   },
+  "jest":{
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "testPathIgnorePatterns":["<rootDir>/build","<rootDir>/node_modules"]
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/jmservera/qna-maker-kb-action"
