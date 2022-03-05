@@ -1,7 +1,7 @@
 {
-  "name": "javascript-action",
-  "version": "1.0.0",
-  "description": "JavaScript Action Template",
+  "name": "qna-maker-kb-action",
+  "version": "0.1.0",
+  "description": "QnA Maker Knowledgebase Action",
   "main": "index.js",
   "scripts": {
     "build": "tsc",
@@ -12,14 +12,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/actions/javascript-action.git"
+    "url": "git+https://github.com/jmservera/qna-maker-kb-action"
   },
   "keywords": [
     "GitHub",
     "Actions",
     "JavaScript"
   ],
-  "author": "",
+  "author": "Juan Manuel Servera",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/actions/javascript-action/issues"

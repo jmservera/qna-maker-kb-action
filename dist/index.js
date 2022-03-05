@@ -24633,7 +24633,7 @@ async function update(api_key, endpoint, id) {
     if (endpoint == null || endpoint == "")
         throw new Error('Please set endpoint');
     if (id == null || id == "")
-        throw new Error('Please set id');
+        throw new Error('Please set the id of the knowledge base');
     const creds = new msRest.ApiKeyCredentials({ inHeader: { 'Ocp-Apim-Subscription-Key': api_key } });
     const qnaMakerClient = new qnamaker.QnAMakerClient(creds, endpoint);
     const knowledgeBaseClient = new qnamaker.Knowledgebase(qnaMakerClient);
