@@ -24623,36 +24623,25 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.update = void 0;
 const qnamaker = __importStar(__nccwpck_require__(7782));
 const msRest = __importStar(__nccwpck_require__(812));
-function update(api_key, endpoint, id) {
-    return __awaiter(this, void 0, void 0, function* () {
-        if (api_key == null || api_key == "")
-            throw new Error('Please set api_key');
-        if (endpoint == null || endpoint == "")
-            throw new Error('Please set endpoint');
-        if (id == null || id == "")
-            throw new Error('Please set id');
-        const creds = new msRest.ApiKeyCredentials({ inHeader: { 'Ocp-Apim-Subscription-Key': api_key } });
-        const qnaMakerClient = new qnamaker.QnAMakerClient(creds, endpoint);
-        const knowledgeBaseClient = new qnamaker.Knowledgebase(qnaMakerClient);
-        var update_kb_payload = {
-            update: {}
-        };
-        var response = yield knowledgeBaseClient.update(id, update_kb_payload);
-        return response;
-    });
+async function update(api_key, endpoint, id) {
+    if (api_key == null || api_key == "")
+        throw new Error('Please set api_key');
+    if (endpoint == null || endpoint == "")
+        throw new Error('Please set endpoint');
+    if (id == null || id == "")
+        throw new Error('Please set id');
+    const creds = new msRest.ApiKeyCredentials({ inHeader: { 'Ocp-Apim-Subscription-Key': api_key } });
+    const qnaMakerClient = new qnamaker.QnAMakerClient(creds, endpoint);
+    const knowledgeBaseClient = new qnamaker.Knowledgebase(qnaMakerClient);
+    var update_kb_payload = {
+        update: {}
+    };
+    var response = await knowledgeBaseClient.update(id, update_kb_payload);
+    return response;
 }
 exports.update = update;
 

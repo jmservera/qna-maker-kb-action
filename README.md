@@ -114,3 +114,7 @@ with:
 ```
 
 See the [actions tab](https://github.com/actions/javascript-action/actions) for runs of this action! :rocket:
+
+## Notes
+
+Using tsconfig base for NodeJS16: https://github.com/tsconfig/bases#centralized-recommendations-for-tsconfig-bases
