@@ -18,11 +18,9 @@
     "testEnvironment": "node",
     "testPathIgnorePatterns": [
       "<rootDir>/build",
+      "<rootDir>/dist",
       "<rootDir>/node_modules"
     ],
-    "transform": {
-    "^.+\\.ts$": "ts-jest"
-    },
     "verbose": true
   },
   "repository": {
