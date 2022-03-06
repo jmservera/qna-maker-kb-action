@@ -11,7 +11,7 @@ async function run(): Promise<void> {
         kb.update(
           core.getInput('kbId'),
           core.getInput('endpoint'),
-          core.getInput('credentials')
+          core.getInput('credentials'),
           core.getInput('path-to-kb')
         )
         break

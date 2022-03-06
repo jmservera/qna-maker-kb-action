@@ -5,7 +5,7 @@ import * as kb from '../ts/knowledgebase'
 // const path = require('path');
 
 test('Throws set api_key', async () => {
-  await expect(kb.update('', '', '')).rejects.toThrow('Please set api_key')
+  await expect(kb.update('', '', '', '')).rejects.toThrow('Please set api_key')
 })
 
 // test('wait 500 ms', async () => {
