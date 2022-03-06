@@ -6,18 +6,21 @@ inputs:
     required: true
     default: 'update'
   api-key:
-    description: 'QnA API Key'
+    description: 'QnA Authoring Subscription Key'
     required: true
   endpoint:
-    description: 'QnA Maker endpoint'
+    description: 'QnA Maker authoring endpoint'
     required: true
-    default: 'https://westus.api.cognitive.microsoft.com/qnamaker/v2.0'
+    default: 'https://YOUR-RESOURCE-NAME.cognitiveservices.azure.com'
   kbId:
     description: 'Knowledge base id'
     required: true
+  path-to-kb:
+    description: 'path to the KB .xls file, i.e.: qna/backup/kb.xls'
+    required: true
 outputs:
   time: # output will be available to future steps
-    description: 'The current time after waiting'
+    description: 'The operation result'
 runs:
   using: 'node16'
   main: 'dist/index.js'

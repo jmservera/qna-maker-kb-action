@@ -12,6 +12,7 @@ async function run(): Promise<void> {
           core.getInput('kbId'),
           core.getInput('endpoint'),
           core.getInput('credentials')
+          core.getInput('path-to-kb')
         )
         break
     }
