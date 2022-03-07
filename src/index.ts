@@ -7,6 +7,10 @@ async function run(): Promise<void> {
   try {
     const operation: string = core.getInput('operation')
     const filePath: string = core.getInput('path-to-kb')
+    const deleteEditorial: boolean = Boolean(
+      core.getInput('delete-editorial')
+    ).valueOf()
+
     switch (operation) {
       case 'testContent': {
         const fullPath = await getContentUri(filePath)
@@ -24,7 +28,9 @@ async function run(): Promise<void> {
           core.getInput('credentials'),
           fullPath,
           core.getInput('kb-filename'),
-          core
+          core,
+          core.getInput('kb-language'),
+          deleteEditorial
         )
         break
       }

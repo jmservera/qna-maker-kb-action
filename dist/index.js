@@ -27507,6 +27507,7 @@ async function run() {
     try {
         const operation = core.getInput('operation');
         const filePath = core.getInput('path-to-kb');
+        const deleteEditorial = Boolean(core.getInput('delete-editorial')).valueOf();
         switch (operation) {
             case 'testContent': {
                 const fullPath = await (0, octokit_1.getContentUri)(filePath);
@@ -27521,7 +27522,7 @@ async function run() {
                 if (!fullPath)
                     throw new Error(`Path not found for ${filePath}`);
                 core.info('Updating kb');
-                kb.update(core.getInput('kb-id'), core.getInput('endpoint'), core.getInput('credentials'), fullPath, core.getInput('kb-filename'), core);
+                kb.update(core.getInput('kb-id'), core.getInput('endpoint'), core.getInput('credentials'), fullPath, core.getInput('kb-filename'), core, core.getInput('kb-language'), deleteEditorial);
                 break;
             }
         }

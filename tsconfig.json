@@ -2,12 +2,12 @@
   "extends": "@tsconfig/node16/tsconfig.json",
   "compilerOptions": {
       "outDir": "build",
-      "moduleResolution": "node"
+      "moduleResolution": "node",
+      "sourceMap": true
     },
     "exclude": [
       "node_modules",
       "dist",
-      "build",
       "**/*.test.ts",
       "__tests__",
       "integration"

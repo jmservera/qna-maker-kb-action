@@ -2,7 +2,7 @@ name: 'QnA Maker Knowledgebase Operations'
 description: 'Update, train or publish QnA Maker Knowledgebases'
 inputs:
   operation:  
-    description: 'Type of operation to run: update, train, publish'
+    description: 'Type of operation to run: testContent, update, train, publish'
     required: true
     default: 'update'
   api-key:
@@ -16,10 +16,18 @@ inputs:
     description: 'Knowledge base id'
     required: true
   path-to-kb:
-    description: 'path to the KB .xls file, for example: qna/backup/kb.xls'
+    description: 'path to the KB .xls file, for example: "qna/my backup/my kb.xls"'
     required: true
   kb-filename:
-    description: 'name of the file, for example: kb.xls'
+    description: 'name of the file, for example: "my kb.xls", for updates it will overwrite the contents under this name'
+    required: true
+  kb-language:
+    description: 'Language for the KB'
+    required: true
+    default: 'English'
+  delete-editorial:
+    description: 'Mark to true to also remove the manually edited contents before the update'
+    default: false
     required: true
   GITHUB_TOKEN:
     description: 'GitHub token'
