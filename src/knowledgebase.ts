@@ -14,8 +14,10 @@
 import * as msRest from '@azure/ms-rest-js'
 import * as qnamaker from '@azure/cognitiveservices-qnamaker'
 
-async function sleep(seconds: number): Promise<void> {
-  return new Promise(vars => setTimeout(vars, seconds))
+async function wait(milliseconds: number): Promise<void> {
+  return new Promise(resolve => {
+    setTimeout(() => resolve(), milliseconds)
+  })
 }
 
 export interface Logger {
@@ -66,7 +68,7 @@ async function update(
     let state = response.operationState
     let details = null
     while (!(state === 'Failed' || state === 'Succeeded')) {
-      await sleep(1)
+      await wait(1000)
       details = await qnaMakerClient.operations.getDetails(response.operationId)
       if (details.operationState) state = details.operationState
     }
@@ -96,7 +98,7 @@ async function update(
     let state = response.operationState
     let details = null
     while (!(state === 'Failed' || state === 'Succeeded')) {
-      await sleep(1)
+      await wait(1000)
       details = await qnaMakerClient.operations.getDetails(response.operationId)
       if (details.operationState) state = details.operationState
     }
