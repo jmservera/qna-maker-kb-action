@@ -24,3 +24,4 @@ jobs:
       with:
         operation: testContent
         path-to-kb: src/index.ts
+        GITHUB_TOKEN: ${{ github.token }}
