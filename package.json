@@ -1,6 +1,6 @@
 {
   "name": "qna-maker-kb-action",
-  "version": "0.1.0",
+  "version": "0.0.11-preview",
   "description": "QnA Maker Knowledgebase Action",
   "main": "dist/index.js",
   "scripts": {

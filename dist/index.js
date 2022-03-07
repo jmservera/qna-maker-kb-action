@@ -27523,19 +27523,11 @@ async function run() {
                     throw new Error(`Path not found for ${filePath}`);
                 core.info('Updating kb');
                 const result = await kb.update(core.getInput('api-key'), core.getInput('endpoint'), core.getInput('kb-id'), fullPath, core.getInput('kb-filename'), core, core.getInput('kb-language'), deleteEditorial);
-                if (result &&
-                    result.errorResponse &&
-                    result.errorResponse.error &&
-                    result.errorResponse.error.message)
+                if (result?.errorResponse?.error?.message)
                     core.setFailed(result.errorResponse.error.message);
                 break;
             }
         }
-        // core.info(`Waiting ${ms} milliseconds ...`);
-        // core.debug((new Date()).toTimeString()); // debug is only output if you set the secret `ACTIONS_RUNNER_DEBUG` to true
-        // await wait(parseInt(ms));
-        // core.info((new Date()).toTimeString());
-        core.setOutput('time', new Date().toTimeString());
     }
     catch (error) {
         if (error instanceof Error)
