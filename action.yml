@@ -21,6 +21,9 @@ inputs:
   kb-filename:
     description: 'name of the file, for example: kb.xls'
     required: true
+  GITHUB_TOKEN:
+    description: 'GitHub token'
+    required: true
 outputs:
   time: # output will be available to future steps
     description: 'The operation result'

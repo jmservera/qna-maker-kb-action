@@ -1,5 +1,6 @@
 import * as core from '@actions/core'
 import * as kb from './knowledgebase'
+import {getContentUri} from './octokit'
 
 // most @actions toolkit packages have async methods
 async function run(): Promise<void> {
@@ -7,17 +8,24 @@ async function run(): Promise<void> {
     const operation: string = core.getInput('operation')
 
     switch (operation) {
-      case 'update':
+      case 'testContent': {
+        const fullPath = await getContentUri(core.getInput('path-to-kb'))
+        core.info(`Got file path: ${fullPath}`)
+        break
+      }
+      case 'update': {
+        const fullPath = await getContentUri(core.getInput('path-to-kb'))
         core.info('Updating kb')
         kb.update(
           core.getInput('kb-id'),
           core.getInput('endpoint'),
           core.getInput('credentials'),
-          core.getInput('path-to-kb'),
+          fullPath,
           core.getInput('kb-filename'),
           core
         )
         break
+      }
     }
 
     // core.info(`Waiting ${ms} milliseconds ...`);
