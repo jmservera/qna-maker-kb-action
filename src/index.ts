@@ -9,10 +9,11 @@ async function run(): Promise<void> {
     switch (operation) {
       case 'update':
         kb.update(
-          core.getInput('kbId'),
+          core.getInput('kb-id'),
           core.getInput('endpoint'),
           core.getInput('credentials'),
-          core.getInput('path-to-kb')
+          core.getInput('path-to-kb'),
+          core.getInput('kb-filename')
         )
         break
     }

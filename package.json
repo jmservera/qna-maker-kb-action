@@ -4,12 +4,15 @@
   "description": "QnA Maker Knowledgebase Action",
   "main": "dist/index.js",
   "scripts": {
+    "start": "node build/integrationtest/localrun.js",
+    "prestart": "npm run build",
     "build": "tsc",
     "format": "prettier --write '**/*.ts'",
     "format-check": "prettier --check '**/*.ts'",
-    "lint": "eslint ts/**/*.ts",
-    "package": "ncc build ts/index.ts -o dist --source-map --license licenses.txt",
+    "lint": "eslint src/**/*.ts",
+    "package": "ncc build src/index.ts -o dist --source-map --license licenses.txt",
     "test": "jest",
+    "itest": "npm run format && npm run build && node build/integrationtest/localrun.js",
     "all": "npm run format && npm run lint && npm run package && npm test"
   },
   "jest": {
@@ -45,10 +48,12 @@
   },
   "devDependencies": {
     "@tsconfig/node16": "^1.0.2",
+    "@types/dotenv": "^8.2.0",
     "@types/jest": "^27.4.1",
     "@types/node": "^17.0.21",
     "@typescript-eslint/parser": "^5.13.0",
     "@vercel/ncc": "^0.33.3",
+    "dotenv": "^16.0.0",
     "eslint": "^8.0.0",
     "eslint-plugin-github": "^4.3.5",
     "eslint-plugin-jest": "^26.1.1",

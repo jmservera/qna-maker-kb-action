@@ -24593,7 +24593,7 @@ exports["default"] = _default;
 
 /***/ }),
 
-/***/ 9199:
+/***/ 6144:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
@@ -24623,14 +24623,14 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(2186));
-const kb = __importStar(__nccwpck_require__(6723));
+const kb = __importStar(__nccwpck_require__(6133));
 // most @actions toolkit packages have async methods
 async function run() {
     try {
         const operation = core.getInput('operation');
         switch (operation) {
             case 'update':
-                kb.update(core.getInput('kbId'), core.getInput('endpoint'), core.getInput('credentials'), core.getInput('path-to-kb'));
+                kb.update(core.getInput('kb-id'), core.getInput('endpoint'), core.getInput('credentials'), core.getInput('path-to-kb'), core.getInput('kb-filename'));
                 break;
         }
         // core.info(`Waiting ${ms} milliseconds ...`);
@@ -24649,7 +24649,7 @@ run();
 
 /***/ }),
 
-/***/ 6723:
+/***/ 6133:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
@@ -24690,7 +24690,10 @@ exports.update = void 0;
 // we may need to use this technique: https://github.com/Monorepo-Actions/setup-gh-cli/blob/main/src/index.ts
 const msRest = __importStar(__nccwpck_require__(812));
 const qnamaker = __importStar(__nccwpck_require__(7782));
-async function update(api_key, endpoint, id, kb_url) {
+async function sleep(seconds) {
+    return new Promise(vars => setTimeout(vars, seconds));
+}
+async function update(api_key, endpoint, id, kb_url, file_name) {
     if (api_key == null || api_key === '')
         throw new Error('Please set api_key');
     if (endpoint == null || endpoint === '')
@@ -24706,14 +24709,26 @@ async function update(api_key, endpoint, id, kb_url) {
         add: {
             files: [
                 {
-                    fileName: 'test.xslx',
+                    fileName: file_name,
                     fileUri: kb_url
                 }
-            ]
-        },
-        update: {}
+            ],
+            language: 'Spanish'
+        }
     };
     const response = await knowledgeBaseClient.update(id, update_kb_payload);
+    if (response.operationId && response.operationState) {
+        let state = response.operationState;
+        let details = null;
+        while (!(state === 'Failed' || state === 'Succeeded')) {
+            await sleep(1);
+            details = await qnaMakerClient.operations.getDetails(response.operationId);
+            if (details.operationState)
+                state = details.operationState;
+        }
+        if (details)
+            return details;
+    }
     return response;
 }
 exports.update = update;
@@ -24931,7 +24946,7 @@ module.exports = JSON.parse('["ac","com.ac","edu.ac","gov.ac","net.ac","mil.ac",
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
 /******/ 	// This entry module is referenced by other modules so it can't be inlined
-/******/ 	var __webpack_exports__ = __nccwpck_require__(9199);
+/******/ 	var __webpack_exports__ = __nccwpck_require__(6144);
 /******/ 	module.exports = __webpack_exports__;
 /******/ 	
 /******/ })()
