@@ -1,21 +1,13 @@
+import * as logger from './logger'
 import {RestError} from '@azure/ms-rest-js'
 import {config} from 'dotenv'
 import {update} from '../src/knowledgebase'
 
-function logInfo(info: string): void {
-  // eslint-disable-next-line no-console
-  console.log(info)
-}
-
-function logError(error: string): void {
-  logInfo(`Error: ${error}`)
-}
-
 config()
-logInfo('Config loaded')
+logger.info('Config loaded')
 
 async function upd(): Promise<void> {
-  logInfo('Start')
+  logger.info('Start')
   if (
     process.env.API_ID &&
     process.env.KB_ENDPOINT &&
@@ -29,19 +21,20 @@ async function upd(): Promise<void> {
         process.env.KB_ENDPOINT,
         process.env.KB_ID,
         process.env.KB_URL,
-        process.env.KB_FILENAME
+        process.env.KB_FILENAME,
+        logger
       )
       if (result.operationId && result.operationState) {
-        logInfo(`Operation ${result.operationState}: ${result.operationId}`)
+        logger.info(`Operation ${result.operationState}: ${result.operationId}`)
         if (result.errorResponse) {
-          logError(JSON.stringify(result.errorResponse))
+          logger.error(JSON.stringify(result.errorResponse))
         }
       } else if (
         result.errorResponse &&
         result.errorResponse.error &&
         result.errorResponse.error.message
       )
-        logError(result.errorResponse.error.message)
+        logger.error(result.errorResponse.error.message)
     } catch (err) {
       if (err instanceof RestError) {
         if (
@@ -51,18 +44,18 @@ async function upd(): Promise<void> {
         ) {
           for (const v of err.body.error.details) {
             if (v) {
-              logError(JSON.stringify(v))
+              logger.error(JSON.stringify(v))
             }
           }
         }
       } else if (err instanceof Error) {
-        logError(err.message)
+        logger.error(err.message)
       }
     }
   } else {
-    logError('No values')
+    logger.error('No values')
   }
 }
 
 // eslint-disable-next-line github/no-then
-upd().then(() => logInfo('End execution'))
+upd().then(() => logger.info('End execution'))

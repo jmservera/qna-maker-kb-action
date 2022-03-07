@@ -18,12 +18,23 @@ async function sleep(seconds: number): Promise<void> {
   return new Promise(vars => setTimeout(vars, seconds))
 }
 
+export interface Logger {
+  info(message: string): void
+  debug(message: string): void
+  error(message: string | Error, properties?: never): void
+  warning(message: string | Error, properties?: never): void
+  notice(message: string | Error, properties?: never): void
+}
+
 async function update(
   api_key: string,
   endpoint: string,
   id: string,
   kb_url: string,
-  file_name: string
+  file_name: string,
+  logger?: Logger,
+  kb_language = 'Spanish',
+  delete_editorial = true
 ): Promise<qnamaker.QnAMakerModels.Operation> {
   if (api_key == null || api_key === '') throw new Error('Please set api_key')
   if (endpoint == null || endpoint === '')
@@ -37,19 +48,20 @@ async function update(
   const qnaMakerClient = new qnamaker.QnAMakerClient(creds, endpoint)
   const knowledgeBaseClient = new qnamaker.Knowledgebase(qnaMakerClient)
 
-  const update_kb_payload = {
-    add: {
-      files: [
-        {
-          fileName: file_name,
-          fileUri: kb_url
-        }
-      ],
-      language: 'Spanish'
+  const sources = [file_name]
+  if (delete_editorial) {
+    sources.push('Editorial')
+  }
+  //first you need to delete
+  const delete_files_payload = {
+    deleteProperty: {
+      sources
     }
   }
 
-  const response = await knowledgeBaseClient.update(id, update_kb_payload)
+  if (logger) logger.debug('deleting old kb answers')
+
+  let response = await knowledgeBaseClient.update(id, delete_files_payload)
   if (response.operationId && response.operationState) {
     let state = response.operationState
     let details = null
@@ -58,7 +70,41 @@ async function update(
       details = await qnaMakerClient.operations.getDetails(response.operationId)
       if (details.operationState) state = details.operationState
     }
-    if (details) return details
+    if (state === 'Failed') {
+      if (details) return details
+      else throw new Error(state)
+    }
+  }
+  if (logger) logger.debug('old kb answers deleted')
+
+  const update_kb_payload = {
+    add: {
+      files: [
+        {
+          fileName: file_name,
+          fileUri: kb_url
+        }
+      ],
+      language: kb_language
+    }
+  }
+
+  if (logger) logger.debug('Uploading new kb answers')
+
+  response = await knowledgeBaseClient.update(id, update_kb_payload)
+  if (response.operationId && response.operationState) {
+    let state = response.operationState
+    let details = null
+    while (!(state === 'Failed' || state === 'Succeeded')) {
+      await sleep(1)
+      details = await qnaMakerClient.operations.getDetails(response.operationId)
+      if (details.operationState) state = details.operationState
+    }
+    if (details) {
+      if (logger)
+        logger.debug(`KB Answers upload ${state}. ${JSON.stringify(details)}`)
+      return details
+    }
   }
   return response
 }
