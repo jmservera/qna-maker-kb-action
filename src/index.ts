@@ -6,17 +6,17 @@ import {getContentUri} from './octokit'
 async function run(): Promise<void> {
   try {
     const operation: string = core.getInput('operation')
-
+    const filePath: string = core.getInput('path-to-kb')
     switch (operation) {
       case 'testContent': {
-        const filePath = core.getInput('path-to-kb')
         const fullPath = await getContentUri(filePath)
         if (fullPath) core.info(`Got file path for ${filePath}`)
         else core.error(`Could not get file ${filePath}`)
         break
       }
       case 'update': {
-        const fullPath = await getContentUri(core.getInput('path-to-kb'))
+        const fullPath = await getContentUri(filePath)
+        if (!fullPath) throw new Error(`Path not found for ${filePath}`)
         core.info('Updating kb')
         kb.update(
           core.getInput('kb-id'),

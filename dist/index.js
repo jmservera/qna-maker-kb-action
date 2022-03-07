@@ -27506,9 +27506,9 @@ const octokit_1 = __nccwpck_require__(6161);
 async function run() {
     try {
         const operation = core.getInput('operation');
+        const filePath = core.getInput('path-to-kb');
         switch (operation) {
             case 'testContent': {
-                const filePath = core.getInput('path-to-kb');
                 const fullPath = await (0, octokit_1.getContentUri)(filePath);
                 if (fullPath)
                     core.info(`Got file path for ${filePath}`);
@@ -27517,7 +27517,9 @@ async function run() {
                 break;
             }
             case 'update': {
-                const fullPath = await (0, octokit_1.getContentUri)(core.getInput('path-to-kb'));
+                const fullPath = await (0, octokit_1.getContentUri)(filePath);
+                if (!fullPath)
+                    throw new Error(`Path not found for ${filePath}`);
                 core.info('Updating kb');
                 kb.update(core.getInput('kb-id'), core.getInput('endpoint'), core.getInput('credentials'), fullPath, core.getInput('kb-filename'), core);
                 break;
@@ -27701,9 +27703,7 @@ const repo = github.context.repo.repo;
 async function getContentUri(path) {
     const { data } = await octokit.rest.repos.getContent({ owner, repo, path });
     if (!Array.isArray(data)) {
-        if (data.download_url) {
-            return data.download_url;
-        }
+        return data.download_url;
     }
     throw new Error(`Could not find the content for $path`);
 }
