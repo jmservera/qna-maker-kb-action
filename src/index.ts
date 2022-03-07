@@ -9,8 +9,10 @@ async function run(): Promise<void> {
 
     switch (operation) {
       case 'testContent': {
-        const fullPath = await getContentUri(core.getInput('path-to-kb'))
-        core.info(`Got file path: ${fullPath}`)
+        const filePath = core.getInput('path-to-kb')
+        const fullPath = await getContentUri(filePath)
+        if (fullPath) core.info(`Got file path for ${filePath}`)
+        else core.error(`Could not get file ${filePath}`)
         break
       }
       case 'update': {

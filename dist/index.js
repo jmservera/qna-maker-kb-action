@@ -27508,8 +27508,12 @@ async function run() {
         const operation = core.getInput('operation');
         switch (operation) {
             case 'testContent': {
-                const fullPath = await (0, octokit_1.getContentUri)(core.getInput('path-to-kb'));
-                core.info(`Got file path: ${fullPath}`);
+                const filePath = core.getInput('path-to-kb');
+                const fullPath = await (0, octokit_1.getContentUri)(filePath);
+                if (fullPath)
+                    core.info(`Got file path for ${filePath}`);
+                else
+                    core.error(`Could not get file ${filePath}`);
                 break;
             }
             case 'update': {
