@@ -4,13 +4,15 @@ import * as github from '@actions/github'
 const GITHUB_TOKEN = core.getInput('GITHUB_TOKEN')
 const octokit = github.getOctokit(GITHUB_TOKEN)
 
-const owner = github.context.repo.owner
-const repo = github.context.repo.repo
-
 export async function getContentUri(
   path: string
 ): Promise<string | null | undefined> {
-  const {data} = await octokit.rest.repos.getContent({owner, repo, path})
+  const {data} = await octokit.rest.repos.getContent({
+    owner: github.context.repo.owner,
+    repo: github.context.repo.repo,
+    path,
+    ref: github.context.ref
+  })
 
   if (!Array.isArray(data)) {
     return data.download_url

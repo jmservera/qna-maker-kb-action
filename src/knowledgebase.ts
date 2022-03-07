@@ -61,7 +61,7 @@ async function update(
     }
   }
 
-  if (logger) logger.debug('deleting old kb answers')
+  logger?.info(`deleting old kb answers for ${JSON.stringify(sources)}`)
 
   let response = await knowledgeBaseClient.update(id, delete_files_payload)
   if (response.operationId && response.operationState) {
@@ -77,7 +77,7 @@ async function update(
       else throw new Error(state)
     }
   }
-  if (logger) logger.debug('old kb answers deleted')
+  logger?.info('old kb answers deleted')
 
   const update_kb_payload = {
     add: {
@@ -91,7 +91,7 @@ async function update(
     }
   }
 
-  if (logger) logger.debug('Uploading new kb answers')
+  logger?.info(`Uploading new kb answers from ${file_name}`)
 
   response = await knowledgeBaseClient.update(id, update_kb_payload)
   if (response.operationId && response.operationState) {
@@ -100,11 +100,13 @@ async function update(
     while (!(state === 'Failed' || state === 'Succeeded')) {
       await wait(1000)
       details = await qnaMakerClient.operations.getDetails(response.operationId)
-      if (details.operationState) state = details.operationState
+      if (details.operationState) {
+        state = details.operationState
+        logger?.info(state)
+      }
     }
     if (details) {
-      if (logger)
-        logger.debug(`KB Answers upload ${state}. ${JSON.stringify(details)}`)
+      logger?.info(`KB Answers upload ${state}. ${JSON.stringify(details)}`)
       return details
     }
   }

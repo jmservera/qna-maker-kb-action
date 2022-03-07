@@ -27617,8 +27617,7 @@ async function update(api_key, endpoint, id, kb_url, file_name, logger, kb_langu
             sources
         }
     };
-    if (logger)
-        logger.debug('deleting old kb answers');
+    logger?.info(`deleting old kb answers for ${JSON.stringify(sources)}`);
     let response = await knowledgeBaseClient.update(id, delete_files_payload);
     if (response.operationId && response.operationState) {
         let state = response.operationState;
@@ -27636,8 +27635,7 @@ async function update(api_key, endpoint, id, kb_url, file_name, logger, kb_langu
                 throw new Error(state);
         }
     }
-    if (logger)
-        logger.debug('old kb answers deleted');
+    logger?.info('old kb answers deleted');
     const update_kb_payload = {
         add: {
             files: [
@@ -27649,8 +27647,7 @@ async function update(api_key, endpoint, id, kb_url, file_name, logger, kb_langu
             language: kb_language
         }
     };
-    if (logger)
-        logger.debug('Uploading new kb answers');
+    logger?.info(`Uploading new kb answers from ${file_name}`);
     response = await knowledgeBaseClient.update(id, update_kb_payload);
     if (response.operationId && response.operationState) {
         let state = response.operationState;
@@ -27658,12 +27655,13 @@ async function update(api_key, endpoint, id, kb_url, file_name, logger, kb_langu
         while (!(state === 'Failed' || state === 'Succeeded')) {
             await wait(1000);
             details = await qnaMakerClient.operations.getDetails(response.operationId);
-            if (details.operationState)
+            if (details.operationState) {
                 state = details.operationState;
+                logger?.info(state);
+            }
         }
         if (details) {
-            if (logger)
-                logger.debug(`KB Answers upload ${state}. ${JSON.stringify(details)}`);
+            logger?.info(`KB Answers upload ${state}. ${JSON.stringify(details)}`);
             return details;
         }
     }
@@ -27708,10 +27706,13 @@ const core = __importStar(__nccwpck_require__(2186));
 const github = __importStar(__nccwpck_require__(5438));
 const GITHUB_TOKEN = core.getInput('GITHUB_TOKEN');
 const octokit = github.getOctokit(GITHUB_TOKEN);
-const owner = github.context.repo.owner;
-const repo = github.context.repo.repo;
 async function getContentUri(path) {
-    const { data } = await octokit.rest.repos.getContent({ owner, repo, path });
+    const { data } = await octokit.rest.repos.getContent({
+        owner: github.context.repo.owner,
+        repo: github.context.repo.repo,
+        path,
+        ref: github.context.ref
+    });
     if (!Array.isArray(data)) {
         return data.download_url;
     }
