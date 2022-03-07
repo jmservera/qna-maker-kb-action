@@ -15,14 +15,14 @@ async function run(): Promise<void> {
       case 'testContent': {
         const fullPath = await getContentUri(filePath)
         if (fullPath) core.info(`Got file path for ${filePath}`)
-        else core.error(`Could not get file ${filePath}`)
+        else core.setFailed(`Could not get file ${filePath}`)
         break
       }
       case 'update': {
         const fullPath = await getContentUri(filePath)
         if (!fullPath) throw new Error(`Path not found for ${filePath}`)
         core.info('Updating kb')
-        await kb.update(
+        const result = await kb.update(
           core.getInput('api-key'),
           core.getInput('endpoint'),
           core.getInput('kb-id'),
@@ -32,6 +32,13 @@ async function run(): Promise<void> {
           core.getInput('kb-language'),
           deleteEditorial
         )
+        if (
+          result &&
+          result.errorResponse &&
+          result.errorResponse.error &&
+          result.errorResponse.error.message
+        )
+          core.setFailed(result.errorResponse.error.message)
         break
       }
     }
@@ -45,6 +52,7 @@ async function run(): Promise<void> {
     core.setOutput('time', new Date().toTimeString())
   } catch (error) {
     if (error instanceof Error) core.setFailed(error.message)
+    else core.setFailed('Unknown error')
   }
 }
 
