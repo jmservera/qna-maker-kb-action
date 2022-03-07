@@ -7,9 +7,7 @@ async function run(): Promise<void> {
   try {
     const operation: string = core.getInput('operation')
     const filePath: string = core.getInput('path-to-kb')
-    const deleteEditorial: boolean = Boolean(
-      core.getInput('delete-editorial')
-    ).valueOf()
+    const deleteEditorial: boolean = core.getBooleanInput('delete-editorial')
 
     switch (operation) {
       case 'testContent': {
