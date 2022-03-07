@@ -22,7 +22,7 @@ async function run(): Promise<void> {
         const fullPath = await getContentUri(filePath)
         if (!fullPath) throw new Error(`Path not found for ${filePath}`)
         core.info('Updating kb')
-        kb.update(
+        await kb.update(
           core.getInput('api-key'),
           core.getInput('endpoint'),
           core.getInput('kb-id'),
