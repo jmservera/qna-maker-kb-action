@@ -27507,14 +27507,14 @@ async function run() {
     try {
         const operation = core.getInput('operation');
         const filePath = core.getInput('path-to-kb');
-        const deleteEditorial = Boolean(core.getInput('delete-editorial')).valueOf();
+        const deleteEditorial = core.getBooleanInput('delete-editorial');
         switch (operation) {
             case 'testContent': {
                 const fullPath = await (0, octokit_1.getContentUri)(filePath);
                 if (fullPath)
                     core.info(`Got file path for ${filePath}`);
                 else
-                    core.error(`Could not get file ${filePath}`);
+                    core.setFailed(`Could not get file ${filePath}`);
                 break;
             }
             case 'update': {
@@ -27522,7 +27522,12 @@ async function run() {
                 if (!fullPath)
                     throw new Error(`Path not found for ${filePath}`);
                 core.info('Updating kb');
-                await kb.update(core.getInput('api-key'), core.getInput('endpoint'), core.getInput('kb-id'), fullPath, core.getInput('kb-filename'), core, core.getInput('kb-language'), deleteEditorial);
+                const result = await kb.update(core.getInput('api-key'), core.getInput('endpoint'), core.getInput('kb-id'), fullPath, core.getInput('kb-filename'), core, core.getInput('kb-language'), deleteEditorial);
+                if (result &&
+                    result.errorResponse &&
+                    result.errorResponse.error &&
+                    result.errorResponse.error.message)
+                    core.setFailed(result.errorResponse.error.message);
                 break;
             }
         }
@@ -27535,6 +27540,8 @@ async function run() {
     catch (error) {
         if (error instanceof Error)
             core.setFailed(error.message);
+        else
+            core.setFailed('Unknown error');
     }
 }
 run();
@@ -27583,6 +27590,11 @@ exports.update = void 0;
 // we may need to use this technique: https://github.com/Monorepo-Actions/setup-gh-cli/blob/main/src/index.ts
 const msRest = __importStar(__nccwpck_require__(812));
 const qnamaker = __importStar(__nccwpck_require__(7782));
+async function wait(milliseconds) {
+    return new Promise(resolve => {
+        setTimeout(() => resolve(), milliseconds);
+    });
+}
 async function update(api_key, endpoint, id, kb_url, file_name, logger, kb_language = 'English', delete_editorial = true) {
     if (api_key == null || api_key === '')
         throw new Error('Please set api_key');
@@ -27612,6 +27624,7 @@ async function update(api_key, endpoint, id, kb_url, file_name, logger, kb_langu
         let state = response.operationState;
         let details = null;
         while (!(state === 'Failed' || state === 'Succeeded')) {
+            await wait(1000);
             details = await qnaMakerClient.operations.getDetails(response.operationId);
             if (details.operationState)
                 state = details.operationState;
@@ -27643,6 +27656,7 @@ async function update(api_key, endpoint, id, kb_url, file_name, logger, kb_langu
         let state = response.operationState;
         let details = null;
         while (!(state === 'Failed' || state === 'Succeeded')) {
+            await wait(1000);
             details = await qnaMakerClient.operations.getDetails(response.operationId);
             if (details.operationState)
                 state = details.operationState;
