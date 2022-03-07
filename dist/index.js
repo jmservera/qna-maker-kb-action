@@ -27522,7 +27522,7 @@ async function run() {
                 if (!fullPath)
                     throw new Error(`Path not found for ${filePath}`);
                 core.info('Updating kb');
-                kb.update(core.getInput('api-key'), core.getInput('endpoint'), core.getInput('kb-id'), fullPath, core.getInput('kb-filename'), core, core.getInput('kb-language'), deleteEditorial);
+                await kb.update(core.getInput('api-key'), core.getInput('endpoint'), core.getInput('kb-id'), fullPath, core.getInput('kb-filename'), core, core.getInput('kb-language'), deleteEditorial);
                 break;
             }
         }
@@ -27583,10 +27583,7 @@ exports.update = void 0;
 // we may need to use this technique: https://github.com/Monorepo-Actions/setup-gh-cli/blob/main/src/index.ts
 const msRest = __importStar(__nccwpck_require__(812));
 const qnamaker = __importStar(__nccwpck_require__(7782));
-async function sleep(seconds) {
-    return new Promise(vars => setTimeout(vars, seconds));
-}
-async function update(api_key, endpoint, id, kb_url, file_name, logger, kb_language = 'Spanish', delete_editorial = true) {
+async function update(api_key, endpoint, id, kb_url, file_name, logger, kb_language = 'English', delete_editorial = true) {
     if (api_key == null || api_key === '')
         throw new Error('Please set api_key');
     if (endpoint == null || endpoint === '')
@@ -27615,7 +27612,6 @@ async function update(api_key, endpoint, id, kb_url, file_name, logger, kb_langu
         let state = response.operationState;
         let details = null;
         while (!(state === 'Failed' || state === 'Succeeded')) {
-            await sleep(1);
             details = await qnaMakerClient.operations.getDetails(response.operationId);
             if (details.operationState)
                 state = details.operationState;
@@ -27647,7 +27643,6 @@ async function update(api_key, endpoint, id, kb_url, file_name, logger, kb_langu
         let state = response.operationState;
         let details = null;
         while (!(state === 'Failed' || state === 'Succeeded')) {
-            await sleep(1);
             details = await qnaMakerClient.operations.getDetails(response.operationId);
             if (details.operationState)
                 state = details.operationState;
