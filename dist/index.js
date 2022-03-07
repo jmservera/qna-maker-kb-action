@@ -27522,7 +27522,7 @@ async function run() {
                 if (!fullPath)
                     throw new Error(`Path not found for ${filePath}`);
                 core.info('Updating kb');
-                kb.update(core.getInput('kb-id'), core.getInput('endpoint'), core.getInput('credentials'), fullPath, core.getInput('kb-filename'), core, core.getInput('kb-language'), deleteEditorial);
+                kb.update(core.getInput('api-key'), core.getInput('endpoint'), core.getInput('kb-id'), fullPath, core.getInput('kb-filename'), core, core.getInput('kb-language'), deleteEditorial);
                 break;
             }
         }

@@ -23,9 +23,9 @@ async function run(): Promise<void> {
         if (!fullPath) throw new Error(`Path not found for ${filePath}`)
         core.info('Updating kb')
         kb.update(
-          core.getInput('kb-id'),
+          core.getInput('api-key'),
           core.getInput('endpoint'),
-          core.getInput('credentials'),
+          core.getInput('kb-id'),
           fullPath,
           core.getInput('kb-filename'),
           core,

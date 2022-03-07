@@ -12,7 +12,7 @@ inputs:
     description: 'QnA Maker authoring endpoint'
     required: true
     default: 'https://YOUR-RESOURCE-NAME.cognitiveservices.azure.com'
-  kbId:
+  kb-id:
     description: 'Knowledge base id'
     required: true
   path-to-kb:
