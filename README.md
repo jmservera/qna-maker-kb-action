@@ -7,13 +7,15 @@
 
 > This is a preview version and not officialy supported, I'm doing it during my spare time, just for fun and because there was no official action for what I needed. While you can open issues, if you have an urgent need of something it doesn't provide, feel free to fork or/and collaborate in this one.
 
-This action can take a file in your repo and push it to the QnA Maker Knowledgebase. You can configure this action to:
+This action can take a file in your repo and push it to the QnA Maker Knowledgebase. As it uses [octokit.js][octokit] to create a link to your file and send it to the QnA Maker service, there's no need to run a checkout action before this one.
+
+You can configure this action to:
 
 * Update: *In preview* You need to provide the path in your repository to the Knwoledge Base file you want to push, the name of the file (this will overwrite the entries under this kb name), language and you can set the `delete-editorial`option to true when you want to clear the manual changes in your kb.
 * Train: *Under development*
 * Publish: *Under develoment*
 
-> Security Notice: this action uses octokit to get a temporary SAS token to provide access to the file even in a private repo. This token has a very short life but it is a potential security risk as an atacker getting it would be able to access all the files on your private repo. I do not print nor show in any way this token, but it is sent to the QnA Maker authoring endpoint, so it is better to treat these values (api-key and endpoint) as secrets.
+> Security Notice: this action uses [octokit][octokit] to get a temporary SAS token to provide access to the file, and this works even in the case your repo is private. This token has a very short life but it is a potential security risk as an atacker getting it would be able to access all the files on your private repo. I do not print nor show in any way this token, but it is sent to the QnA Maker authoring endpoint, so it is better to treat these values (api-key and endpoint) as secrets.
 
 ## Inputs
 
@@ -68,6 +70,14 @@ with:
   delete-editorial: true
   GITHUB_TOKEN: ${{ github.token }}
 ```
+
+## Work In Progress
+
+ - [x] Run with private repos
+ - [] Enterprise internal repos - not tested yet
+ - [x] Update the KB - Preview version 
+ - [] Train - in progress
+ - [] Publish - not started
 
 ---
 
@@ -130,3 +140,6 @@ See the [actions tab](https://github.com/actions/javascript-action/actions) for 
 ## Notes
 
 Using tsconfig base for NodeJS16: https://github.com/tsconfig/bases#centralized-recommendations-for-tsconfig-bases
+
+
+[octokit]: https://github.com/octokit/octokit.js "The GitHub SDK for Node.js Octokit package"
