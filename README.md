@@ -1,66 +1,78 @@
-# Create a JavaScript Action
+# QnA Maker Action
 
 <p align="center">
-  <a href="https://github.com/actions/javascript-action/actions"><img alt="javscript-action status" src="https://github.com/actions/javascript-action/workflows/units-test/badge.svg"></a>
+  <a href="https://github.com/jmservera/qna-maker-kb-action/actions"><img alt="qna-maker-kb-action status" src="https://github.com/jmservera/qna-maker-kb-action/workflows/units-test/badge.svg"></a>
 </p>
 
-Use this template to bootstrap the creation of a JavaScript action.:rocket:
 
-This template includes tests, linting, a validation workflow, publishing, and versioning guidance.
+> This is a preview version and not officialy supported, I'm doing it during my spare time, just for fun and because there was no official action for what I needed. While you can open issues, if you have an urgent need of something it doesn't provide, feel free to fork or/and collaborate in this one.
 
-If you are new, there's also a simpler introduction.  See the [Hello World JavaScript Action](https://github.com/actions/hello-world-javascript-action)
+This action can take a file in your repo and push it to the QnA Maker Knowledgebase. You can configure this action to:
 
-## Create an action from this template
+* Update: *In preview* You need to provide the path in your repository to the Knwoledge Base file you want to push, the name of the file (this will overwrite the entries under this kb name), language and you can set the `delete-editorial`option to true when you want to clear the manual changes in your kb.
+* Train: *Under development*
+* Publish: *Under develoment*
 
-Click the `Use this Template` and provide the new repo details for your action
+> Security Notice: this action uses octokit to get a temporary SAS token to provide access to the file even in a private repo. This token has a very short life but it is a potential security risk as an atacker getting it would be able to access all the files on your private repo. I do not print nor show in any way this token, but it is sent to the QnA Maker authoring endpoint, so it is better to treat these values (api-key and endpoint) as secrets.
 
-## Code in Main
+## Inputs
 
-Install the dependencies
+### `operation`
 
-```bash
-npm install
+**Required** Type of operation to run: testContent, *update* [Default], train, publish
+
+### `api-key`
+
+**Required** QnA Authoring Subscription Key
+
+### `endpoint`
+
+**Required** QnA Maker authoring endpoint in the form: 'https://YOUR-RESOURCE-NAME.cognitiveservices.azure.com'
+
+### `kb-id`
+
+**Required** Knowledge base id
+
+### `path-to-kb`
+
+**Required** Path to the KB .xls file in your repo, for example: "qna/my backup/my kb.xls"
+
+### `kb-filename`
+
+**Required** Name of the file, for example: "my kb.xls", for updates it will overwrite the contents under this name'
+
+### `kb-language`
+
+Language for the KB, (Default: 'English')
+
+### `delete-editorial`
+
+Mark it to true to also remove the manually edited contents before the update (Default: false)
+
+### `GITHUB_TOKEN`
+
+**Required** GitHub token or PAT (usually setting it to ${{ github.token }} should be enough even for private repos)
+
+## Usage
+
+```yaml
+uses: jmservera/qna-maker-kb-action@v0.0.10-preview
+with:
+  api-key: ${{secrets.QNA_API_KEY}}
+  endpoint: ${{secrets.QNA_ENDPOINT}}
+  kb-id: ${{secrets.QNA_KB_ID}}
+  operation: update
+  path-to-kb: "my app/knowledgebase/QnAs.xlsx"
+  kb-filename: "QnAs.xlsx"
+  kb-language: "Spanish"
+  delete-editorial: true
+  GITHUB_TOKEN: ${{ github.token }}
 ```
 
-Run the tests :heavy_check_mark:
+---
 
-```bash
-$ npm test
+I just leave this by now until I create a release of this action:
 
- PASS  ./index.test.js
-  ✓ throws invalid number (3ms)
-  ✓ wait 500 ms (504ms)
-  ✓ test runs (95ms)
-...
-```
-
-## Change action.yml
-
-The action.yml defines the inputs and output for your action.
-
-Update the action.yml with your name, description, inputs and outputs for your action.
-
-See the [documentation](https://help.github.com/en/articles/metadata-syntax-for-github-actions)
-
-## Change the Code
-
-Most toolkit and CI/CD operations involve async operations so the action is run in an async function.
-
-```javascript
-const core = require('@actions/core');
-...
-
-async function run() {
-  try {
-      ...
-  }
-  catch (error) {
-    core.setFailed(error.message);
-  }
-}
-
-run()
-```
 
 See the [toolkit documentation](https://github.com/actions/toolkit/blob/master/README.md#packages) for the various packages.
 
@@ -73,7 +85,7 @@ Actions are run from GitHub repos.  Packaging the action will create a packaged 
 Run prepare
 
 ```bash
-npm run prepare
+npm run package
 ```
 
 Since the packaged index.js is run from the dist folder.
