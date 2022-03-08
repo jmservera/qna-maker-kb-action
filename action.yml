@@ -1,5 +1,9 @@
 name: 'QnA Maker Knowledgebase Operations'
 description: 'Update, train or publish QnA Maker Knowledgebases'
+author: 'Juan Manuel Servera'
+branding:
+  icon: speaker
+  color: yellow
 inputs:
   operation:  
     description: 'Type of operation to run: testContent, update, train, publish'
