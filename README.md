@@ -74,10 +74,10 @@ with:
 ## Work In Progress
 
  - [x] Run with private repos
- - [] Enterprise internal repos - not tested yet
+ - [ ] Enterprise internal repos - not tested yet
  - [x] Update the KB - Preview version 
- - [] Train - in progress
- - [] Publish - not started
+ - [ ] Train - in progress
+ - [ ] Publish - not started
 
 ---
 
