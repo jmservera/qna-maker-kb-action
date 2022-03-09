@@ -7,7 +7,7 @@
 
 > This is a preview version and not officialy supported, I'm doing it during my spare time, just for fun and because there was no official action for what I needed. While you can open issues, if you have an urgent need of something it doesn't provide, feel free to fork or/and collaborate in this one.
 
-This action can take a file in your repo and push it to the QnA Maker Knowledgebase. As it uses [octokit.js][octokit] to create a link to your file and send it to the QnA Maker service, there's no need to run a checkout action before this one.
+This action can take a file in your repo and push it to the QnA Maker Knowledge base. As it uses [octokit.js][octokit] to create a link to your file and send it to the QnA Maker service, there's no need to run a checkout action before this one.
 
 You can configure this action to:
 
