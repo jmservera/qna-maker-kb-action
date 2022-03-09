@@ -27513,7 +27513,7 @@ async function update(filePath, deleteEditorial) {
 }
 async function publish() {
     core.info('Publishing kb');
-    const result = await kb.publish(core.getInput('api-key'), core.getInput('endpoint'), core.getInput('kb-id'));
+    const result = await kb.publish(core.getInput('api-key'), core.getInput('endpoint'), core.getInput('kb-id'), core);
     if (!result)
         core.setFailed('Could not publish kb');
 }
