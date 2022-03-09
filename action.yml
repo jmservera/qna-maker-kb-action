@@ -6,9 +6,9 @@ branding:
   color: yellow
 inputs:
   operation:  
-    description: 'Type of operation to run: testContent, update, train, publish'
+    description: 'Type of operation to run: testContent, update, publish, update+publish'
     required: true
-    default: 'update'
+    default: 'update+publish'
   api-key:
     description: 'QnA Authoring Subscription Key'
     required: true

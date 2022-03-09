@@ -27502,6 +27502,21 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(2186));
 const kb = __importStar(__nccwpck_require__(6133));
 const octokit_1 = __nccwpck_require__(6161);
+async function update(filePath, deleteEditorial) {
+    const fullPath = await (0, octokit_1.getContentUri)(filePath);
+    if (!fullPath)
+        throw new Error(`Path not found for ${filePath}`);
+    core.info('Updating kb');
+    const result = await kb.update(core.getInput('api-key'), core.getInput('endpoint'), core.getInput('kb-id'), fullPath, core.getInput('kb-filename'), core, core.getInput('kb-language'), deleteEditorial);
+    if (result?.errorResponse?.error?.message)
+        core.setFailed(result.errorResponse.error.message);
+}
+async function publish() {
+    core.info('Publishing kb');
+    const result = await kb.publish(core.getInput('api-key'), core.getInput('endpoint'), core.getInput('kb-id'));
+    if (!result)
+        core.setFailed('Could not publish kb');
+}
 // most @actions toolkit packages have async methods
 async function run() {
     try {
@@ -27518,14 +27533,17 @@ async function run() {
                 break;
             }
             case 'update': {
-                const fullPath = await (0, octokit_1.getContentUri)(filePath);
-                if (!fullPath)
-                    throw new Error(`Path not found for ${filePath}`);
-                core.info('Updating kb');
-                const result = await kb.update(core.getInput('api-key'), core.getInput('endpoint'), core.getInput('kb-id'), fullPath, core.getInput('kb-filename'), core, core.getInput('kb-language'), deleteEditorial);
-                if (result?.errorResponse?.error?.message)
-                    core.setFailed(result.errorResponse.error.message);
+                await update(filePath, deleteEditorial);
                 break;
+            }
+            case 'publish': {
+                await publish();
+                break;
+            }
+            case 'update+publish':
+            default: {
+                await update(filePath, deleteEditorial);
+                await publish();
             }
         }
     }
@@ -27574,12 +27592,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.update = void 0;
-// for the file you may need the gh cli https://docs.github.com/en/actions/using-workflows/using-github-cli-in-workflows
-// to create a link to your file
-// ask for example to  https://api.github.com/repos/[owner]/[repo]/contents/[path]/?ref=[branch]
-// and then get all the URLs and file names with `gh api $API_URL --jq ".[] | {name, download_url}"`
-// we may need to use this technique: https://github.com/Monorepo-Actions/setup-gh-cli/blob/main/src/index.ts
+exports.publish = exports.update = void 0;
 const msRest = __importStar(__nccwpck_require__(812));
 const qnamaker = __importStar(__nccwpck_require__(7782));
 async function wait(milliseconds) {
@@ -27587,17 +27600,28 @@ async function wait(milliseconds) {
         setTimeout(() => resolve(), milliseconds);
     });
 }
-async function update(api_key, endpoint, id, kb_url, file_name, logger, kb_language = 'English', delete_editorial = true) {
+function createClient(api_key, endpoint) {
     if (api_key == null || api_key === '')
         throw new Error('Please set api_key');
     if (endpoint == null || endpoint === '')
         throw new Error('Please set endpoint');
-    if (id == null || id === '')
-        throw new Error('Please set the id of the knowledge base');
     const creds = new msRest.ApiKeyCredentials({
         inHeader: { 'Ocp-Apim-Subscription-Key': api_key }
     });
-    const qnaMakerClient = new qnamaker.QnAMakerClient(creds, endpoint);
+    return new qnamaker.QnAMakerClient(creds, endpoint);
+}
+async function update(api_key, endpoint, id, kb_url, file_name, logger, kb_language = 'English', delete_editorial = true) {
+    const qnaClient = createClient(api_key, endpoint);
+    if (id == null || id === '')
+        throw new Error('Please set the id of the knowledge base');
+    return await updateKb(qnaClient, id, kb_url, file_name, logger, kb_language, delete_editorial);
+}
+exports.update = update;
+async function publish(api_key, endpoint, id, logger) {
+    return publishKb(createClient(api_key, endpoint), id, logger);
+}
+exports.publish = publish;
+async function updateKb(qnaMakerClient, id, kb_url, file_name, logger, kb_language = 'English', delete_editorial = true) {
     const knowledgeBaseClient = new qnamaker.Knowledgebase(qnaMakerClient);
     const sources = [file_name];
     if (delete_editorial) {
@@ -27659,7 +27683,17 @@ async function update(api_key, endpoint, id, kb_url, file_name, logger, kb_langu
     }
     return response;
 }
-exports.update = update;
+async function publishKb(qnaClient, kb_id, logger) {
+    const kbclient = new qnamaker.Knowledgebase(qnaClient);
+    logger?.info(`Publishing knowledge base...`);
+    const results = await kbclient.publish(kb_id);
+    if (!results._response.status.toString().startsWith('2')) {
+        logger?.error(`Publish request failed - HTTP status ${results._response.status}`);
+        return false;
+    }
+    logger?.info(`Publish request succeeded - HTTP status ${results._response.status}`);
+    return true;
+}
 
 
 /***/ }),

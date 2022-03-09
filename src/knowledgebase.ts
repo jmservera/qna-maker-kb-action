@@ -3,14 +3,6 @@
 // and
 // https://docs.microsoft.com/en-us/answers/questions/488789/how-to-upload-a-file-to-qna-maker-knowledge-base-u.html
 
-// for the file you may need the gh cli https://docs.github.com/en/actions/using-workflows/using-github-cli-in-workflows
-// to create a link to your file
-
-// ask for example to  https://api.github.com/repos/[owner]/[repo]/contents/[path]/?ref=[branch]
-// and then get all the URLs and file names with `gh api $API_URL --jq ".[] | {name, download_url}"`
-
-// we may need to use this technique: https://github.com/Monorepo-Actions/setup-gh-cli/blob/main/src/index.ts
-
 import * as msRest from '@azure/ms-rest-js'
 import * as qnamaker from '@azure/cognitiveservices-qnamaker'
 
@@ -28,6 +20,19 @@ export interface Logger {
   notice(message: string | Error, properties?: never): void
 }
 
+function createClient(
+  api_key: string,
+  endpoint: string
+): qnamaker.QnAMakerClient {
+  if (api_key == null || api_key === '') throw new Error('Please set api_key')
+  if (endpoint == null || endpoint === '')
+    throw new Error('Please set endpoint')
+  const creds = new msRest.ApiKeyCredentials({
+    inHeader: {'Ocp-Apim-Subscription-Key': api_key}
+  })
+  return new qnamaker.QnAMakerClient(creds, endpoint)
+}
+
 async function update(
   api_key: string,
   endpoint: string,
@@ -38,16 +43,40 @@ async function update(
   kb_language = 'English',
   delete_editorial = true
 ): Promise<qnamaker.QnAMakerModels.Operation> {
-  if (api_key == null || api_key === '') throw new Error('Please set api_key')
-  if (endpoint == null || endpoint === '')
-    throw new Error('Please set endpoint')
+  const qnaClient = createClient(api_key, endpoint)
+
   if (id == null || id === '')
     throw new Error('Please set the id of the knowledge base')
 
-  const creds = new msRest.ApiKeyCredentials({
-    inHeader: {'Ocp-Apim-Subscription-Key': api_key}
-  })
-  const qnaMakerClient = new qnamaker.QnAMakerClient(creds, endpoint)
+  return await updateKb(
+    qnaClient,
+    id,
+    kb_url,
+    file_name,
+    logger,
+    kb_language,
+    delete_editorial
+  )
+}
+
+async function publish(
+  api_key: string,
+  endpoint: string,
+  id: string,
+  logger?: Logger
+): Promise<boolean> {
+  return publishKb(createClient(api_key, endpoint), id, logger)
+}
+
+async function updateKb(
+  qnaMakerClient: qnamaker.QnAMakerClient,
+  id: string,
+  kb_url: string,
+  file_name: string,
+  logger?: Logger,
+  kb_language = 'English',
+  delete_editorial = true
+): Promise<qnamaker.QnAMakerModels.Operation> {
   const knowledgeBaseClient = new qnamaker.Knowledgebase(qnaMakerClient)
 
   const sources = [file_name]
@@ -113,4 +142,28 @@ async function update(
   return response
 }
 
-export {update}
+async function publishKb(
+  qnaClient: qnamaker.QnAMakerClient,
+  kb_id: string,
+  logger?: Logger
+): Promise<boolean> {
+  const kbclient = new qnamaker.Knowledgebase(qnaClient)
+  logger?.info(`Publishing knowledge base...`)
+
+  const results = await kbclient.publish(kb_id)
+
+  if (!results._response.status.toString().startsWith('2')) {
+    logger?.error(
+      `Publish request failed - HTTP status ${results._response.status}`
+    )
+    return false
+  }
+
+  logger?.info(
+    `Publish request succeeded - HTTP status ${results._response.status}`
+  )
+
+  return true
+}
+
+export {update, publish}

@@ -1,10 +1,26 @@
 import * as logger from './logger'
+import {publish, update} from '../src/knowledgebase'
 import {RestError} from '@azure/ms-rest-js'
 import {config} from 'dotenv'
-import {update} from '../src/knowledgebase'
 
 config()
 logger.info('Config loaded')
+
+async function pub(): Promise<void> {
+  logger.info('Start publish')
+  if (process.env.API_ID && process.env.KB_ENDPOINT && process.env.KB_ID) {
+    const published = await publish(
+      process.env.API_ID,
+      process.env.KB_ENDPOINT,
+      process.env.KB_ID
+    )
+    if (!published) {
+      logger.error('Publishing failed')
+    } else {
+      logger.info('Publishing succeeded')
+    }
+  }
+}
 
 async function upd(): Promise<void> {
   logger.info('Start')
@@ -26,9 +42,6 @@ async function upd(): Promise<void> {
       )
       if (result.operationId && result.operationState) {
         logger.info(`Operation ${result.operationState}: ${result.operationId}`)
-        if (result.errorResponse) {
-          logger.error(JSON.stringify(result.errorResponse))
-        }
       } else if (
         result.errorResponse &&
         result.errorResponse.error &&
@@ -58,4 +71,8 @@ async function upd(): Promise<void> {
 }
 
 // eslint-disable-next-line github/no-then
-upd().then(() => logger.info('End execution'))
+upd().then(
+  async () =>
+    // eslint-disable-next-line github/no-then
+    await pub().then(() => logger.info('Done'))
+)
