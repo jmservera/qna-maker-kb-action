@@ -60,7 +60,7 @@ Mark it to true to also remove the manually edited contents before the update (D
 ## Usage
 
 ```yaml
-uses: jmservera/qna-maker-kb-action@v0.0.10-preview
+uses: jmservera/qna-maker-kb-action@v0.1.1-preview
 with:
   api-key: ${{secrets.QNA_API_KEY}}
   endpoint: ${{secrets.QNA_ENDPOINT}}
