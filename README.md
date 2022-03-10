@@ -12,8 +12,8 @@ This action can take a file in your repo and push it to the QnA Maker Knowledge 
 You can configure this action to:
 
 * Update: *In preview* You need to provide the path in your repository to the Knwoledge Base file you want to push, the name of the file (this will overwrite the entries under this kb name), language and you can set the `delete-editorial`option to true when you want to clear the manual changes in your kb.
-* Train: *Under development*
-* Publish: *Under develoment*
+* Publish: *In preview* For this operation you only need the credentials for the QnA Maker and the knowledge base id.
+* Update and Publish: *In preview* if you use the update+preview operation it will do the both operations in one call. This is the default operation for the action.
 
 > :warning: <br> **Security Notice**: this action uses [octokit][octokit] to get a temporary SAS token to provide access to the file, and this works even in the case your repo is private. This token has a very short life but it is a potential security risk as an atacker getting it would be able to access all the files on your private repo. I do not print nor show in any way this token, but it is sent to the QnA Maker authoring endpoint, so it is better to treat these values (api-key and endpoint) as secrets.
 
@@ -79,3 +79,5 @@ with:
  - [ ] Enterprise internal repos - not tested yet
  - [x] Update the KB - Preview version 
  - [x] Publish - Preview version
+
+[octokit]: https://github.com/octokit/octokit.js "The GitHub SDK for Node.js Octokit package"
